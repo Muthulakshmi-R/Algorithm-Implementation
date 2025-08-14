@@ -4,72 +4,57 @@
 
 int adj[MAX][MAX]; 
 bool visited[MAX];
-int n;  
+int n;
 
-void DFS(int node, int goal) {
-    if (node == goal) {
-        printf("%d ", node);
-        return;
-    }
-
+void DFS(int node) {
     visited[node] = true;
     printf("%d ", node);
-
     for (int i = 0; i < n; i++) {
         if (adj[node][i] && !visited[i]) {
-            DFS(i, goal);
-            break;  // for simple DFS, go to one neighbor at a time
+            DFS(i);
         }
     }
 }
 
-void BFS(int start, int goal) {
+void BFS(int start) {
     int queue[MAX];
     int front = 0, rear = 0;
-    bool visitedB[MAX] = {false};
-
-    queue[rear++] = start;
-    visitedB[start] = true;
-
+    if (!visited[start]) {
+        queue[rear++] = start;
+        visited[start] = true;
+    }
     while (front < rear) {
         int node = queue[front++];
         printf("%d ", node);
 
-        if (node == goal) return;
-
         for (int i = 0; i < n; i++) {
-            if (adj[node][i] && !visitedB[i]) {
+            if (adj[node][i] && !visited[i]) {
                 queue[rear++] = i;
-                visitedB[i] = true;
+                visited[i] = true;
             }
         }
     }
 }
 
 int main() {
-    int start, goal;
-
+    int start;
     printf("Enter number of nodes: ");
     scanf("%d", &n);
-
     printf("Enter adjacency matrix (%d x %d):\n", n, n);
     for (int i = 0; i < n; i++)
         for (int j = 0; j < n; j++)
             scanf("%d", &adj[i][j]);
-
-    printf("Enter start node: ");
+    printf("Enter starting node: ");
     scanf("%d", &start);
-
-    printf("Enter goal node: ");
-    scanf("%d", &goal);
-
-    printf("\nDFS Traversal: ");
     for (int i = 0; i < n; i++) visited[i] = false;
-    DFS(start, goal);
-
-    printf("\nBFS Traversal: ");
-    BFS(start, goal);
-
+    printf("\nDFS traversal: ");
+    DFS(start);
+    printf("\nBFS traversal for remaining nodes: ");
+    for (int i = 0; i < n; i++) {
+        if (!visited[i]) {
+            BFS(i);
+        }
+    }
     printf("\n");
     return 0;
 }
